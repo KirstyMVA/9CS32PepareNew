@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 34 Develop: Nested Selection Game Loop</title>
+    <title>Week 34 Develop: Game Logic Flow</title>
     <style>
         :root {
             --primary-title: #007BA6;
@@ -158,24 +158,22 @@
 <body>
 
 <div class="container">
-    <h1>Week 34 Develop: Nested Logic (Penalty Decider)</h1>
+    <h1>Week 34 Develop: Nested Selection Game Logic</h1>
     
-    <div class="instruction-box">
-        <p>⏱️ TIME LIMIT: 30 Minutes. Let's make our algorithm smarter. Instead of automatically losing a life, we will use a random generator to decide if the penalty is scored or missed!</p>
-    </div>
+    <h2>The Purpose of the Algorithm</h2>
+    <p>When developing video games, computers must constantly evaluate live events to update a player's core stats. This algorithm is designed to manage a penalty shootout scenario. It handles setting up a player's session values, rolling a random event to see if the penalty was saved or missed, dynamically updating their metrics, and terminating the game instantly if they run completely out of lives.</p>
 
-    <h2>The Logic Rules</h2>
-    <p>Your algorithm needs to use <span class="keyword">Selection</span> blocks to evaluate a random variable called <code>penalty_result</code>. Arrange the blocks to follow this design path:</p>
+    <h2>Your Instructions</h2>
+    <p>You need to reconstruct this game algorithm using <span class="keyword">Pseudocode</span> blocks. Arrange the shuffled statements on the left into the empty sequence tracks on the right so they precisely follow this step-by-step logic path:</p>
     <ol>
-        <li>Set up the starting game values (<code>lives = 3</code> and <code>score = 0</code>).</li>
-        <li>Generate a random status: <code>"Scored"</code> or <code>"Missed"</code>.</li>
-        <li>Check <strong>IF</strong> the result is <code>"Scored"</code> ➡️ Increase the score by 10.</li>
-        <li><strong>ELSE</strong> (if they missed) ➡️ Take away 1 life.</li>
-        <li>Finally, check if their <code>lives</code> counter has dropped to 0 to trigger a <code>"Game Over"</code>.</li>
+        <li><strong>Set Up:</strong> Establish the starting constraints (<code>lives = 3</code> and <code>score = 0</code>).</li>
+        <li><strong>The Event:</strong> Randomly simulate an outcome state as either <code>"Scored"</code> or <code>"Missed"</code>.</li>
+        <li><strong>The Branch Check:</strong> Use an <code>IF / ELSE</code> statement structure. If they scored, award them 10 points. If they missed, deduct 1 life. Don't forget to close this decision path using an <code>ENDIF</code>!</li>
+        <li><strong>Elimination Guard:</strong> Immediately check if their lives counter has dropped to 0, and display <code>"Game Over"</code> if true.</li>
     </ol>
 
     <div class="instruction-box">
-        <p>🕹️ INSTRUCTION: Click blocks on the left to stack them in order on the right. Tap a slot on the right if you need to remove a block and try again.</p>
+        <p>🕹️ TASK: Click the shuffled blocks on the left to stack them onto the right-hand board. If you make a mistake, simply tap any slot on the right to remove that block.</p>
     </div>
 
     <div class="workspace-grid">
@@ -199,7 +197,7 @@
         <div>
             <h3>Your Algorithmic Sequence</h3>
             <div class="slots-box">
-                <div class="slot-label">1. CHOOSE START VALUES</div>
+                <div class="slot-label">1. INITIALISE LIVE CONSTANTS</div>
                 <div class="slot" id="slot1" onclick="clearSlot('slot1')"></div>
                 <div class="slot" id="slot2" onclick="clearSlot('slot2')"></div>
                 
@@ -230,7 +228,7 @@
 
     <div class="model-answer" id="modelAnswer">
         <h3 style="color: #007ba6; margin-top:0;">📋 Master Exam Model Answer</h3>
-        <p>Look at how the indentation works here. The code inside the <code>IF</code> and <code>ELSE</code> blocks is shifted right to show exactly which instructions depend on the penalty choice:</p>
+        <p>Look at how the indentation works here. The instructions inside the <code>IF</code> and <code>ELSE</code> blocks are pushed right to clearly show they only happen depending on the penalty choice:</p>
         <pre>
 SET score TO 0
 SET lives TO 3
@@ -248,9 +246,16 @@ ENDIF</pre>
 
 <script>
     const correctSequence = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11'];
-    // Allow alternate start variable declarations (lives then score)
     const altSequence = ['b2', 'b1', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11'];
     const slotIds = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'slot7', 'slot8', 'slot9', 'slot10', 'slot11'];
+
+    // Shuffle Function to randomize the starting code blocks pool
+    function shufflePool() {
+        const pool = document.getElementById('blockPool');
+        for (let i = pool.children.length; i >= 0; i--) {
+            pool.appendChild(pool.children[Math.random() * i | 0]);
+        }
+    }
 
     function moveBlock(blockId) {
         const block = document.getElementById(blockId);
@@ -278,6 +283,7 @@ ENDIF</pre>
         });
         document.getElementById('feedback').style.display = 'none';
         document.getElementById('modelAnswer').style.display = 'none';
+        shufflePool();
     }
 
     function checkAlgorithm() {
@@ -302,30 +308,36 @@ ENDIF</pre>
         if (exactMatch || altMatch) {
             feedback.style.backgroundColor = '#d1fae5';
             feedback.style.color = '#065f46';
-            feedback.innerHTML = "🟢 FANTASTIC WORK! You successfully used an IF / ELSE branch inside your algorithm framework. Your logic handles both success and failure states perfectly!";
+            feedback.innerHTML = "🟢 FANTASTIC WORK! You successfully mapped out an IF / ELSE branch inside your algorithm. Your logic handles both success and failure states perfectly!";
             document.getElementById('modelAnswer').style.display = 'block';
         } else {
             feedback.style.backgroundColor = '#fffde7';
             feedback.style.color = '#a16207';
             
             let hint = "🔍 DEBUG DIAGNOSIS HINT:<br>";
+            if (currentSeq[0] !== 'b1' && currentSeq[0] !== 'b2') {
+                hint += "• Section 1 must start by initializing your starting tracking states (SET score / SET lives).<br>";
+            }
             if (currentSeq[2] !== 'b3') {
-                hint += "• Place the RANDOM picker line right before your penalty branch condition checks.<br>";
+                hint += "• Place the RANDOM penalty generator line directly in Section 2 before evaluating any results.<br>";
             }
             if (currentSeq[3] !== 'b4') {
-                hint += "• Your penalty evaluation block must open with the statement: 'IF penalty_result == \"Scored\" THEN'.<br>";
+                hint += "• Your penalty conditional check must open with: 'IF penalty_result == \"Scored\" THEN'.<br>";
             }
             if (currentSeq[5] !== 'b6') {
-                hint += "• Use the 'ELSE' divider block immediately after changing the score, so the computer knows what to do if they miss.<br>";
+                hint += "• Place the alternative 'ELSE' marker line immediately after updating the score to handle missed attempts.<br>";
             }
             if (currentSeq[7] !== 'b8') {
-                hint += "• Remember to seal your conditional choices by placing the 'ENDIF' line at the close of section 3.<br>";
+                hint += "• Remember to seal your condition track cleanly with the 'ENDIF' line at slot 8.<br>";
             }
-            hint += "Adjust your puzzle sequence blocks and check again!";
+            hint += "Reposition your statement rows and run another check!";
             feedback.innerHTML = hint;
             document.getElementById('modelAnswer').style.display = 'block';
         }
     }
+
+    // Run shuffle automatically when the page loads
+    window.onload = shufflePool;
 </script>
 
 </body>
