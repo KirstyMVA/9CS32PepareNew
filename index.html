@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 34 Develop: Game Algorithm Planning</title>
+    <title>Week 34 Develop: Nested Selection Game Loop</title>
     <style>
         :root {
             --primary-title: #007BA6;
@@ -24,7 +24,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             background: var(--card-bg);
             padding: 30px;
@@ -46,15 +46,15 @@
 
         .keyword { color: var(--keyword-color); font-weight: bold; background-color: #ffebee; padding: 2px 6px; border-radius: 4px; }
 
-        /* Scaffolding Puzzle Layout */
+        /* Workspace Layout */
         .workspace-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 25px;
             margin-top: 20px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 850px) {
             .workspace-grid { grid-template-columns: 1fr; }
         }
 
@@ -63,19 +63,20 @@
             border: 2px solid #cbd5e1;
             border-radius: 8px;
             padding: 15px;
-            min-height: 250px;
+            min-height: 400px;
         }
 
         .code-block {
             background: #1e293b;
             color: #f8fafc;
-            padding: 10px 15px;
-            margin: 8px 0;
+            padding: 8px 12px;
+            margin: 6px 0;
             border-radius: 6px;
             font-family: 'Courier New', Courier, monospace;
             cursor: pointer;
             user-select: none;
             border-left: 4px solid var(--primary-title);
+            font-size: 13px;
             transition: transform 0.1s, background-color 0.2s;
         }
 
@@ -87,21 +88,22 @@
         .slot {
             border: 2px dashed #cbd5e1;
             border-radius: 6px;
-            min-height: 44px;
-            margin: 10px 0;
+            min-height: 38px;
+            margin: 8px 0;
             background: #fff;
             display: flex;
             align-items: center;
             padding: 0 10px;
             font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
         }
 
         .slot-label {
-            font-size: 12px;
+            font-size: 11px;
             color: #64748b;
             font-weight: bold;
-            margin-bottom: -5px;
-            margin-top: 10px;
+            margin-bottom: -4px;
+            margin-top: 12px;
         }
 
         .btn-container {
@@ -149,77 +151,95 @@
             border-radius: 6px;
             font-family: 'Courier New', Courier, monospace;
             margin: 10px 0 0 0;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Week 34 Develop: Game Algorithm Planning</h1>
+    <h1>Week 34 Develop: Nested Logic (Penalty Decider)</h1>
     
     <div class="instruction-box">
-        <p>⏱️ TIME LIMIT: 30 Minutes. Practice planning an algorithm using Pseudocode statements. Your program needs to handle setting up a game player's status, tracking a penalty, and checking if they have lost.</p>
+        <p>⏱️ TIME LIMIT: 30 Minutes. Let's make our algorithm smarter. Instead of automatically losing a life, we will use a random generator to decide if the penalty is scored or missed!</p>
     </div>
 
-    <h2>The Goal</h2>
-    <p>You need to arrange the <span class="keyword">Pseudocode</span> blocks into the correct sequential order on the right. 
-    The algorithm must follow this precise checklist design path:</p>
+    <h2>The Logic Rules</h2>
+    <p>Your algorithm needs to use <span class="keyword">Selection</span> blocks to evaluate a random variable called <code>penalty_result</code>. Arrange the blocks to follow this design path:</p>
     <ol>
-        <li>Create the starting variables for <code>score</code> and <code>lives</code>.</li>
-        <li>Reduce the player's <code>lives</code> counter by 1.</li>
-        <li>Check <code>IF</code> the player has run out of lives entirely.</li>
-        <li>Output a <code>"Game Over"</code> alert window if that condition is met.</li>
+        <li>Set up the starting game values (<code>lives = 3</code> and <code>score = 0</code>).</li>
+        <li>Generate a random status: <code>"Scored"</code> or <code>"Missed"</code>.</li>
+        <li>Check <strong>IF</strong> the result is <code>"Scored"</code> ➡️ Increase the score by 10.</li>
+        <li><strong>ELSE</strong> (if they missed) ➡️ Take away 1 life.</li>
+        <li>Finally, check if their <code>lives</code> counter has dropped to 0 to trigger a <code>"Game Over"</code>.</li>
     </ol>
 
     <div class="instruction-box">
-        <p>🕹️ INSTRUCTION: Click a code block on the left to move it into the next available slot on the right. Click a slot on the right to clear it and send the block back.</p>
+        <p>🕹️ INSTRUCTION: Click blocks on the left to stack them in order on the right. Tap a slot on the right if you need to remove a block and try again.</p>
     </div>
 
     <div class="workspace-grid">
         <div>
-            <h3>Available Pseudocode Blocks</h3>
+            <h3>Pseudocode Blocks</h3>
             <div class="pool-box" id="blockPool">
-                <div class="code-block" id="b1" onclick="moveBlock('b1')">IF lives == 0 THEN</div>
-                <div class="code-block" id="b2" onclick="moveBlock('b2')">SET score TO 0</div>
-                <div class="code-block" id="b3" onclick="moveBlock('b3')">OUTPUT "Game Over"</div>
-                <div class="code-block" id="b4" onclick="moveBlock('b4')">SET lives TO 3</div>
-                <div class="code-block" id="b5" onclick="moveBlock('b5')">SET lives TO lives - 1</div>
-                <div class="code-block" id="b6" onclick="moveBlock('b6')">ENDIF</div>
+                <div class="code-block" id="b1" onclick="moveBlock('b1')">SET score TO 0</div>
+                <div class="code-block" id="b2" onclick="moveBlock('b2')">SET lives TO 3</div>
+                <div class="code-block" id="b3" onclick="moveBlock('b3')">SET penalty_result TO RANDOM("Scored", "Missed")</div>
+                <div class="code-block" id="b4" onclick="moveBlock('b4')">IF penalty_result == "Scored" THEN</div>
+                <div class="code-block" id="b5" onclick="moveBlock('b5')">SET score TO score + 10</div>
+                <div class="code-block" id="b6" onclick="moveBlock('b6')">ELSE</div>
+                <div class="code-block" id="b7" onclick="moveBlock('b7')">SET lives TO lives - 1</div>
+                <div class="code-block" id="b8" onclick="moveBlock('b8')">ENDIF</div>
+                <div class="code-block" id="b9" onclick="moveBlock('b9')">IF lives == 0 THEN</div>
+                <div class="code-block" id="b10" onclick="moveBlock('b10')">OUTPUT "Game Over"</div>
+                <div class="code-block" id="b11" onclick="moveBlock('b11')">ENDIF</div>
             </div>
         </div>
 
         <div>
             <h3>Your Algorithmic Sequence</h3>
             <div class="slots-box">
-                <div class="slot-label">1. INITIALISE VARIABLES</div>
+                <div class="slot-label">1. CHOOSE START VALUES</div>
                 <div class="slot" id="slot1" onclick="clearSlot('slot1')"></div>
                 <div class="slot" id="slot2" onclick="clearSlot('slot2')"></div>
                 
-                <div class="slot-label">2. THE PROCESS (TAKE A PENALTY)</div>
+                <div class="slot-label">2. CHOOSE THE RANDOM EVENT</div>
                 <div class="slot" id="slot3" onclick="clearSlot('slot3')"></div>
                 
-                <div class="slot-label">3. SELECTION CONDITION CHECK</div>
+                <div class="slot-label">3. THE PENALTY OUTCOME (IF / ELSE)</div>
                 <div class="slot" id="slot4" onclick="clearSlot('slot4')"></div>
                 <div class="slot" id="slot5" onclick="clearSlot('slot5')"></div>
                 <div class="slot" id="slot6" onclick="clearSlot('slot6')"></div>
+                <div class="slot" id="slot7" onclick="clearSlot('slot7')"></div>
+                <div class="slot" id="slot8" onclick="clearSlot('slot8')"></div>
+                
+                <div class="slot-label">4. CHECK FOR ELIMINATION</div>
+                <div class="slot" id="slot9" onclick="clearSlot('slot9')"></div>
+                <div class="slot" id="slot10" onclick="clearSlot('slot10')"></div>
+                <div class="slot" id="slot11" onclick="clearSlot('slot11')"></div>
             </div>
         </div>
     </div>
 
     <div class="btn-container">
-        <button class="action-btn check-btn" onclick="checkAlgorithm()">⚡ Check My Algorithm</button>
-        <button class="action-btn reset-btn" onclick="resetPuzzle()">🔄 Reset Layout</button>
+        <button class="action-btn check-btn" onclick="checkAlgorithm()">⚡ Check My Logic</button>
+        <button class="action-btn reset-btn" onclick="resetPuzzle()">🔄 Clear All</button>
     </div>
 
     <div class="feedback-box" id="feedback"></div>
 
     <div class="model-answer" id="modelAnswer">
         <h3 style="color: #007ba6; margin-top:0;">📋 Master Exam Model Answer</h3>
-        <p>Compare your structure against the official exam layout design below. Notice how the indentation clearly highlights code inside the selection branch:</p>
+        <p>Look at how the indentation works here. The code inside the <code>IF</code> and <code>ELSE</code> blocks is shifted right to show exactly which instructions depend on the penalty choice:</p>
         <pre>
 SET score TO 0
 SET lives TO 3
-SET lives TO lives - 1
+SET penalty_result TO RANDOM("Scored", "Missed")
+IF penalty_result == "Scored" THEN
+    SET score TO score + 10
+ELSE
+    SET lives TO lives - 1
+ENDIF
 IF lives == 0 THEN
     OUTPUT "Game Over"
 ENDIF</pre>
@@ -227,14 +247,13 @@ ENDIF</pre>
 </div>
 
 <script>
-    // Sequence mapping trackers
-    const correctSequence = ['b2', 'b4', 'b5', 'b1', 'b3', 'b6'];
-    const alternatingVariables = ['b4', 'b2', 'b5', 'b1', 'b3', 'b6']; // Permissible alternative variable order
-    const slotIds = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6'];
+    const correctSequence = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11'];
+    // Allow alternate start variable declarations (lives then score)
+    const altSequence = ['b2', 'b1', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11'];
+    const slotIds = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'slot7', 'slot8', 'slot9', 'slot10', 'slot11'];
 
     function moveBlock(blockId) {
         const block = document.getElementById(blockId);
-        // Find next empty slot
         for (let id of slotIds) {
             const slot = document.getElementById(id);
             if (slot.children.length === 0) {
@@ -247,8 +266,7 @@ ENDIF</pre>
     function clearSlot(slotId) {
         const slot = document.getElementById(slotId);
         if (slot.children.length > 0) {
-            const block = slot.children[0];
-            document.getElementById('blockPool').appendChild(block);
+            document.getElementById('blockPool').appendChild(slot.children[0]);
         }
     }
 
@@ -256,9 +274,7 @@ ENDIF</pre>
         const pool = document.getElementById('blockPool');
         slotIds.forEach(id => {
             const slot = document.getElementById(id);
-            if (slot.children.length > 0) {
-                pool.appendChild(slot.children[0]);
-            }
+            if (slot.children.length > 0) pool.appendChild(slot.children[0]);
         });
         document.getElementById('feedback').style.display = 'none';
         document.getElementById('modelAnswer').style.display = 'none';
@@ -273,41 +289,41 @@ ENDIF</pre>
         const feedback = document.getElementById('feedback');
         feedback.style.display = 'block';
 
-        // Check for empty elements
         if (currentSeq.includes(null)) {
             feedback.style.backgroundColor = '#fee2e2';
             feedback.style.color = '#991b1b';
-            feedback.innerHTML = "💡 HINT: You have blank slots left! Make sure to fill all 6 lines to complete the tracking sequence layout.";
+            feedback.innerHTML = "💡 HINT: There are empty slots left! Fill all slots to finalize your layout configuration.";
             return;
         }
 
-        // Evaluate logic sequence paths
-        const matchExact = currentSeq.every((val, index) => val === correctSequence[index]);
-        const matchAlt = currentSeq.every((val, index) => val === alternatingVariables[index]);
+        const exactMatch = currentSeq.every((val, i) => val === correctSequence[i]);
+        const altMatch = currentSeq.every((val, i) => val === altSequence[i]);
 
-        if (matchExact || matchAlt) {
+        if (exactMatch || altMatch) {
             feedback.style.backgroundColor = '#d1fae5';
             feedback.style.color = '#065f46';
-            feedback.innerHTML = "🟢 PERFECT LOGIC! Your sequence handles allocation, processing modification calculations, and structured validation flawlessly.";
+            feedback.innerHTML = "🟢 FANTASTIC WORK! You successfully used an IF / ELSE branch inside your algorithm framework. Your logic handles both success and failure states perfectly!";
             document.getElementById('modelAnswer').style.display = 'block';
         } else {
             feedback.style.backgroundColor = '#fffde7';
             feedback.style.color = '#a16207';
             
-            // Tailored hint diagnosis based on positions
-            let hint = "🔍 INTERMEDIATE DIAGNOSIS HINT:<br>";
-            if (currentSeq[0] !== 'b2' && currentSeq[0] !== 'b4') {
-                hint += "• Your algorithm should start by establishing initial variable constraints (SET score/lives).<br>";
+            let hint = "🔍 DEBUG DIAGNOSIS HINT:<br>";
+            if (currentSeq[2] !== 'b3') {
+                hint += "• Place the RANDOM picker line right before your penalty branch condition checks.<br>";
             }
-            if (currentSeq[2] !== 'b5') {
-                hint += "• Remember to process your life loss calculation (SET lives TO lives - 1) before running checks.<br>";
+            if (currentSeq[3] !== 'b4') {
+                hint += "• Your penalty evaluation block must open with the statement: 'IF penalty_result == \"Scored\" THEN'.<br>";
             }
-            if (currentSeq[3] !== 'b1') {
-                hint += "• Ensure your validation condition query (IF...) triggers right before printing notifications.<br>";
+            if (currentSeq[5] !== 'b6') {
+                hint += "• Use the 'ELSE' divider block immediately after changing the score, so the computer knows what to do if they miss.<br>";
             }
-            hint += "Check your steps and try repositioning the puzzle blocks!";
+            if (currentSeq[7] !== 'b8') {
+                hint += "• Remember to seal your conditional choices by placing the 'ENDIF' line at the close of section 3.<br>";
+            }
+            hint += "Adjust your puzzle sequence blocks and check again!";
             feedback.innerHTML = hint;
-            document.getElementById('modelAnswer').style.display = 'block'; // Always show model answer so they can learn from mistakes
+            document.getElementById('modelAnswer').style.display = 'block';
         }
     }
 </script>
