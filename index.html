@@ -3,49 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 36 Develop: Build a Linear Search</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script>
-    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js" type="text/javascript"></script>
-    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js" type="text/javascript"></script>
+    <title>Week 34 Develop: Game Algorithm Planning</title>
     <style>
-        :root { --primary-title: #007BA6; --keyword-color: #C62828; --instruction-color: #00796B; --bg-color: #f9fbfd; --card-bg: #ffffff; --text-color: #2c3e50; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; background-color: var(--bg-color); color: var(--text-color); padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: var(--card-bg); padding: 30px; border-radius: 12px; }
+        :root {
+            --primary-title: #007BA6;
+            --keyword-color: #C62828;
+            --instruction-color: #00796B;
+            --bg-color: #f9fbfd;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
         h1 { color: var(--primary-title); border-bottom: 3px solid var(--primary-title); padding-bottom: 10px; }
-        .instruction-box { background-color: #e0f2f1; border-left: 6px solid var(--instruction-color); padding: 15px; margin: 15px 0; }
+        h2 { color: var(--primary-title); font-size: 20px; margin-top: 25px; }
+
+        .instruction-box {
+            background-color: #e0f2f1;
+            border-left: 6px solid var(--instruction-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
         .instruction-box p { margin: 0; color: var(--instruction-color); font-weight: 600; }
-        textarea { width: 100%; height: 280px; font-family: monospace; background-color: #1e293b; color: #f8fafc; padding: 15px; border-radius: 8px; }
-        .run-btn { background-color: var(--instruction-color); color: white; border: none; padding: 12px 25px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
-        .console-output { background-color: #000000; color: #22c55e; font-family: monospace; padding: 15px; border-radius: 8px; min-height: 100px; margin-top: 10px; white-space: pre-wrap; }
+
+        .keyword { color: var(--keyword-color); font-weight: bold; background-color: #ffebee; padding: 2px 6px; border-radius: 4px; }
+
+        /* Scaffolding Puzzle Layout */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .workspace-grid { grid-template-columns: 1fr; }
+        }
+
+        .pool-box, .slots-box {
+            background: #f8fafc;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 250px;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            cursor: pointer;
+            user-select: none;
+            border-left: 4px solid var(--primary-title);
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .code-block:hover {
+            background: #334155;
+            transform: scale(1.01);
+        }
+
+        .slot {
+            border: 2px dashed #cbd5e1;
+            border-radius: 6px;
+            min-height: 44px;
+            margin: 10px 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .slot-label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: bold;
+            margin-bottom: -5px;
+            margin-top: 10px;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .check-btn { background-color: var(--instruction-color); color: white; }
+        .check-btn:hover { background-color: #005b51; }
+        .reset-btn { background-color: #64748b; color: white; }
+        .reset-btn:hover { background-color: #475569; }
+
+        .feedback-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .model-answer {
+            margin-top: 25px;
+            background: #eef7fa;
+            border: 1px solid #007BA6;
+            border-radius: 8px;
+            padding: 20px;
+            display: none;
+        }
+
+        pre {
+            background: #2d3748;
+            color: #f7fafc;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 10px 0 0 0;
+        }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <h1>Week 36 Develop: Coding Linear Search</h1>
-    <div class="instruction-box"><p>⏱️ TIME LIMIT: 30 Minutes. Complete the loops on line 8 and conditionals on line 10 to allow our program engine to search through array entities safely.</p></div>
+    <h1>Week 34 Develop: Game Algorithm Planning</h1>
+    
+    <div class="instruction-box">
+        <p>⏱️ TIME LIMIT: 30 Minutes. Practice planning an algorithm using Pseudocode statements. Your program needs to handle setting up a game player's status, tracking a penalty, and checking if they have lost.</p>
+    </div>
 
-    <textarea id="yourcode" spellcheck="false"># Define our dataset array list
-names_list = ["Khadija", "Oliver", "Ethan", "Mia"]
-target = "Ethan"
+    <h2>The Goal</h2>
+    <p>You need to arrange the <span class="keyword">Pseudocode</span> blocks into the correct sequential order on the right. 
+    The algorithm must follow this precise checklist design path:</p>
+    <ol>
+        <li>Create the starting variables for <code>score</code> and <code>lives</code>.</li>
+        <li>Reduce the player's <code>lives</code> counter by 1.</li>
+        <li>Check <code>IF</code> the player has run out of lives entirely.</li>
+        <li>Output a <code>"Game Over"</code> alert window if that condition is met.</li>
+    </ol>
 
-print("Starting scan for target: " + target)
+    <div class="instruction-box">
+        <p>🕹️ INSTRUCTION: Click a code block on the left to move it into the next available slot on the right. Click a slot on the right to clear it and send the block back.</p>
+    </div>
 
-# STEP 1: Loop through all 4 slots using a count-controlled loop
-for i in range( ):
-    # STEP 2: Use an IF check to see if names_list[i] matches target variable
-    if 
-        print("🎯 Target discovered at position slot index: " + str(i))
-    </textarea>
-    <button class="run-btn" onclick="runPython()">⚡ Run Search Engine</button>
-    <div class="console-output" id="output">Terminal tracking sequence...</div>
+    <div class="workspace-grid">
+        <div>
+            <h3>Available Pseudocode Blocks</h3>
+            <div class="pool-box" id="blockPool">
+                <div class="code-block" id="b1" onclick="moveBlock('b1')">IF lives == 0 THEN</div>
+                <div class="code-block" id="b2" onclick="moveBlock('b2')">SET score TO 0</div>
+                <div class="code-block" id="b3" onclick="moveBlock('b3')">OUTPUT "Game Over"</div>
+                <div class="code-block" id="b4" onclick="moveBlock('b4')">SET lives TO 3</div>
+                <div class="code-block" id="b5" onclick="moveBlock('b5')">SET lives TO lives - 1</div>
+                <div class="code-block" id="b6" onclick="moveBlock('b6')">ENDIF</div>
+            </div>
+        </div>
+
+        <div>
+            <h3>Your Algorithmic Sequence</h3>
+            <div class="slots-box">
+                <div class="slot-label">1. INITIALISE VARIABLES</div>
+                <div class="slot" id="slot1" onclick="clearSlot('slot1')"></div>
+                <div class="slot" id="slot2" onclick="clearSlot('slot2')"></div>
+                
+                <div class="slot-label">2. THE PROCESS (TAKE A PENALTY)</div>
+                <div class="slot" id="slot3" onclick="clearSlot('slot3')"></div>
+                
+                <div class="slot-label">3. SELECTION CONDITION CHECK</div>
+                <div class="slot" id="slot4" onclick="clearSlot('slot4')"></div>
+                <div class="slot" id="slot5" onclick="clearSlot('slot5')"></div>
+                <div class="slot" id="slot6" onclick="clearSlot('slot6')"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-container">
+        <button class="action-btn check-btn" onclick="checkAlgorithm()">⚡ Check My Algorithm</button>
+        <button class="action-btn reset-btn" onclick="resetPuzzle()">🔄 Reset Layout</button>
+    </div>
+
+    <div class="feedback-box" id="feedback"></div>
+
+    <div class="model-answer" id="modelAnswer">
+        <h3 style="color: #007ba6; margin-top:0;">📋 Master Exam Model Answer</h3>
+        <p>Compare your structure against the official exam layout design below. Notice how the indentation clearly highlights code inside the selection branch:</p>
+        <pre>
+SET score TO 0
+SET lives TO 3
+SET lives TO lives - 1
+IF lives == 0 THEN
+    OUTPUT "Game Over"
+ENDIF</pre>
+    </div>
 </div>
+
 <script>
-    function outf(t) { var o = document.getElementById("output"); o.innerHTML += t; }
-    function runPython() {
-        var p = document.getElementById("yourcode").value; var o = document.getElementById("output"); o.innerHTML = '';
-        Sk.configure({output:outf, read:function(x){if(Sk.builtinFiles===undefined||Sk.builtinFiles["files"][x]===undefined)throw "File not found"; return Sk.builtinFiles["files"][x];}});
-        Sk.misceval.asyncToPromise(function() { return Sk.importMainWithBody("<stdin>", false, p, true); }).then(function(){}, function(err){ o.innerHTML = "❌ Error:\n" + err.toString(); });
+    // Sequence mapping trackers
+    const correctSequence = ['b2', 'b4', 'b5', 'b1', 'b3', 'b6'];
+    const alternatingVariables = ['b4', 'b2', 'b5', 'b1', 'b3', 'b6']; // Permissible alternative variable order
+    const slotIds = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6'];
+
+    function moveBlock(blockId) {
+        const block = document.getElementById(blockId);
+        // Find next empty slot
+        for (let id of slotIds) {
+            const slot = document.getElementById(id);
+            if (slot.children.length === 0) {
+                slot.appendChild(block);
+                break;
+            }
+        }
+    }
+
+    function clearSlot(slotId) {
+        const slot = document.getElementById(slotId);
+        if (slot.children.length > 0) {
+            const block = slot.children[0];
+            document.getElementById('blockPool').appendChild(block);
+        }
+    }
+
+    function resetPuzzle() {
+        const pool = document.getElementById('blockPool');
+        slotIds.forEach(id => {
+            const slot = document.getElementById(id);
+            if (slot.children.length > 0) {
+                pool.appendChild(slot.children[0]);
+            }
+        });
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('modelAnswer').style.display = 'none';
+    }
+
+    function checkAlgorithm() {
+        const currentSeq = slotIds.map(id => {
+            const slot = document.getElementById(id);
+            return slot.children.length > 0 ? slot.children[0].id : null;
+        });
+
+        const feedback = document.getElementById('feedback');
+        feedback.style.display = 'block';
+
+        // Check for empty elements
+        if (currentSeq.includes(null)) {
+            feedback.style.backgroundColor = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = "💡 HINT: You have blank slots left! Make sure to fill all 6 lines to complete the tracking sequence layout.";
+            return;
+        }
+
+        // Evaluate logic sequence paths
+        const matchExact = currentSeq.every((val, index) => val === correctSequence[index]);
+        const matchAlt = currentSeq.every((val, index) => val === alternatingVariables[index]);
+
+        if (matchExact || matchAlt) {
+            feedback.style.backgroundColor = '#d1fae5';
+            feedback.style.color = '#065f46';
+            feedback.innerHTML = "🟢 PERFECT LOGIC! Your sequence handles allocation, processing modification calculations, and structured validation flawlessly.";
+            document.getElementById('modelAnswer').style.display = 'block';
+        } else {
+            feedback.style.backgroundColor = '#fffde7';
+            feedback.style.color = '#a16207';
+            
+            // Tailored hint diagnosis based on positions
+            let hint = "🔍 INTERMEDIATE DIAGNOSIS HINT:<br>";
+            if (currentSeq[0] !== 'b2' && currentSeq[0] !== 'b4') {
+                hint += "• Your algorithm should start by establishing initial variable constraints (SET score/lives).<br>";
+            }
+            if (currentSeq[2] !== 'b5') {
+                hint += "• Remember to process your life loss calculation (SET lives TO lives - 1) before running checks.<br>";
+            }
+            if (currentSeq[3] !== 'b1') {
+                hint += "• Ensure your validation condition query (IF...) triggers right before printing notifications.<br>";
+            }
+            hint += "Check your steps and try repositioning the puzzle blocks!";
+            feedback.innerHTML = hint;
+            document.getElementById('modelAnswer').style.display = 'block'; // Always show model answer so they can learn from mistakes
+        }
     }
 </script>
+
 </body>
 </html>
