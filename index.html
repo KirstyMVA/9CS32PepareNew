@@ -3,86 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 34 Prepare: Introduction to Algorithms</title>
+    <title>Week 36 Develop: Build a Linear Search</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js" type="text/javascript"></script>
     <style>
         :root { --primary-title: #007BA6; --keyword-color: #C62828; --instruction-color: #00796B; --bg-color: #f9fbfd; --card-bg: #ffffff; --text-color: #2c3e50; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; background-color: var(--bg-color); color: var(--text-color); padding: 20px; margin: 0; }
-        .container { max-width: 900px; margin: 0 auto; background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; background-color: var(--bg-color); color: var(--text-color); padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: var(--card-bg); padding: 30px; border-radius: 12px; }
         h1 { color: var(--primary-title); border-bottom: 3px solid var(--primary-title); padding-bottom: 10px; }
-        h2 { color: var(--primary-title); font-size: 20px; margin-top: 25px; }
-        .instruction-box { background-color: #e0f2f1; border-left: 6px solid var(--instruction-color); padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .instruction-box { background-color: #e0f2f1; border-left: 6px solid var(--instruction-color); padding: 15px; margin: 15px 0; }
         .instruction-box p { margin: 0; color: var(--instruction-color); font-weight: 600; }
-        .keyword { color: var(--keyword-color); font-weight: bold; background-color: #ffebee; padding: 2px 6px; border-radius: 4px; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { background-color: #e2e8f0; border: none; padding: 12px 20px; cursor: pointer; border-radius: 8px; font-weight: bold; }
-        .tab-btn.active { background-color: var(--primary-title); color: white; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        pre { background: #2d3748; color: #f7fafc; padding: 15px; border-radius: 8px; font-family: monospace; }
-        .run-btn { background-color: var(--instruction-color); color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; }
-        .console-output { background: black; color: #00ff00; padding: 15px; font-family: monospace; border-radius: 5px; min-height: 60px; margin-top: 10px; white-space: pre-wrap; }
+        textarea { width: 100%; height: 280px; font-family: monospace; background-color: #1e293b; color: #f8fafc; padding: 15px; border-radius: 8px; }
+        .run-btn { background-color: var(--instruction-color); color: white; border: none; padding: 12px 25px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+        .console-output { background-color: #000000; color: #22c55e; font-family: monospace; padding: 15px; border-radius: 8px; min-height: 100px; margin-top: 10px; white-space: pre-wrap; }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Week 34 Prepare: What is an Algorithm?</h1>
-    <div class="instruction-box"><p>🎯 YOUR TASK: Complete the steps below to discover how we map out computer instructions visually before writing code.</p></div>
-    <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(event, 'step1')">1. The Concept</button>
-        <button class="tab-btn" onclick="openTab(event, 'step2')">2. Visual Flowcharts</button>
-        <button class="tab-btn" onclick="openTab(event, 'step3')">3. Live Code Run</button>
-    </div>
-    <div id="step1" class="tab-content active">
-        <h2>What is an Algorithm?</h2>
-        <p>An <span class="keyword">Algorithm</span> is simply a step-by-step set of instructions used to solve a problem or complete a task. Think of it like a recipe for baking a cake or the precise steps you take to tie your shoelaces.</p>
-        <p>Every algorithm relies on three main building blocks:</p>
-        <ul>
-            <li><strong>Input:</strong> Data given to the algorithm (e.g., ingredients).</li>
-            <li><strong>Process:</strong> The actions taken (e.g., mixing and baking).</li>
-            <li><strong>Output:</strong> The final result produced (e.g., a delicious cake!).</li>
-        </ul>
-    </div>
-    <div id="step2" class="tab-content">
-        <h2>Mapping it Out with Flowcharts</h2>
-        <p>Computer scientists use specific shapes to draw algorithms visually before typing them out:</p>
-        <ul>
-            <li>🔹 <strong>Oval (Terminator):</strong> Shows the START and END points of an algorithm.</li>
-            <li>🔹 <strong>Rectangle (Process):</strong> Represents an action or calculation (e.g., <code>Multiply by 2</code>).</li>
-            <li>🔹 <strong>Parallelogram (Input/Output):</strong> Represents data moving into or out of the system.</li>
-        </ul>
-        <pre>
-[ START ] ---> / Input Age / ---> [ Double the Age ] ---> / Output New Age / ---> [ END ]
-        </pre>
-    </div>
-    <div id="step3" class="tab-content">
-        <h2>Bringing the Flowchart to Life</h2>
-        <div class="instruction-box"><p>🕹️ INSTRUCTION: Click the button below to see how Python executes this simple Input-Process-Output algorithm in real time!</p></div>
-        <textarea id="yourcode" style="display:none;">
-age = 14
-print("Input Age: " + str(age))
-doubled_age = age * 2
-print("Processing: Doubling the age...")
-print("Output Result: " + str(doubled_age))
-        </textarea>
-        <button class="run-btn" onclick="runPython()">⚡ Run Algorithm</button>
-        <div class="console-output" id="output">> Ready to run...</div>
-    </div>
+    <h1>Week 36 Develop: Coding Linear Search</h1>
+    <div class="instruction-box"><p>⏱️ TIME LIMIT: 30 Minutes. Complete the loops on line 8 and conditionals on line 10 to allow our program engine to search through array entities safely.</p></div>
+
+    <textarea id="yourcode" spellcheck="false"># Define our dataset array list
+names_list = ["Khadija", "Oliver", "Ethan", "Mia"]
+target = "Ethan"
+
+print("Starting scan for target: " + target)
+
+# STEP 1: Loop through all 4 slots using a count-controlled loop
+for i in range( ):
+    # STEP 2: Use an IF check to see if names_list[i] matches target variable
+    if 
+        print("🎯 Target discovered at position slot index: " + str(i))
+    </textarea>
+    <button class="run-btn" onclick="runPython()">⚡ Run Search Engine</button>
+    <div class="console-output" id="output">Terminal tracking sequence...</div>
 </div>
 <script>
-    function openTab(e, id) {
-        var i, tc = document.getElementsByClassName("tab-content"), tb = document.getElementsByClassName("tab-btn");
-        for (i = 0; i < tc.length; i++) tc[i].classList.remove("active");
-        for (i = 0; i < tb.length; i++) tb[i].classList.remove("active");
-        document.getElementById(id).classList.add("active"); e.currentTarget.classList.add("active");
-    }
     function outf(t) { var o = document.getElementById("output"); o.innerHTML += t; }
     function runPython() {
         var p = document.getElementById("yourcode").value; var o = document.getElementById("output"); o.innerHTML = '';
         Sk.configure({output:outf, read:function(x){if(Sk.builtinFiles===undefined||Sk.builtinFiles["files"][x]===undefined)throw "File not found"; return Sk.builtinFiles["files"][x];}});
-        Sk.misceval.asyncToPromise(function() { return Sk.importMainWithBody("<stdin>", false, p, true); });
+        Sk.misceval.asyncToPromise(function() { return Sk.importMainWithBody("<stdin>", false, p, true); }).then(function(){}, function(err){ o.innerHTML = "❌ Error:\n" + err.toString(); });
     }
 </script>
 </body>
